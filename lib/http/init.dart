@@ -180,22 +180,22 @@ class Request {
     //   ),
     // );
 
-    /// 设置代理
-    if (enableSystemProxy) {
-      dio.httpClientAdapter = IOHttpClientAdapter(
+    dio.httpClientAdapter = IOHttpClientAdapter(
         createHttpClient: () {
           final HttpClient client = HttpClient();
+          /// 设置代理
           // Config the client.
-          client.findProxy = (Uri uri) {
-            // return 'PROXY host:port';
-            return 'PROXY $systemProxyHost:$systemProxyPort';
-          };
+          if (enableSystemProxy) {
+            client.findProxy = (Uri uri) {
+              // return 'PROXY host:port';
+              return 'PROXY $systemProxyHost:$systemProxyPort';
+            };
+          }
           client.badCertificateCallback =
               (X509Certificate cert, String host, int port) => true;
           return client;
         },
-      );
-    }
+    );
 
     //添加拦截器
     dio.interceptors.add(ApiInterceptor());
